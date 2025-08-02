@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "./src/generated/prisma"
@@ -24,50 +23,51 @@ enum SubscriptionStatus {
   INACTIVE
 }
 
-model User{
-  id String @id @default(uuid())
-  mobileNumber String @unique
-  otp String
-  otpExpireAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id           String    @id @default(uuid())
+  mobileNumber String    @unique
+  otp          String?
+  otpExpireAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  password     String?
 
-  chatrooms ChatRoom[]
+  chatrooms    ChatRoom[]
   subscription Subscription[]
 
-  dailyPromptCount Int @default(0)
-  lastPromptReset DateTime @default(now())
+  dailyPromptCount Int      @default(0)
+  lastPromptReset  DateTime @default(now())
 }
 
-model ChatRoom{
-  id String @id @default(uuid())
-  name String
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages Message[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model ChatRoom {
+  id        String    @id @default(uuid())
+  name      String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
-model Message{
-  id String @id @default(uuid())
+model Message {
+  id         String   @id @default(uuid())
   chatRoomId String
-  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
-  role Role
-  content String
-  createdAt DateTime @default(now())
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  role       Role
+  content    String
+  createdAt  DateTime @default(now())
 }
 
 model Subscription {
-  id String @id @default(uuid())
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tier SubscriptionTier @default(BASIC)
-  stripeCustomerId String?
+  id                   String              @id @default(uuid())
+  userId               String
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier                 SubscriptionTier    @default(BASIC)
+  stripeCustomerId     String?
   stripeSubscriptionId String?
-  currentPeriodStart DateTime?
-  currentPeriodEnd   DateTime?
-  status        SubscriptionStatus?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  status               SubscriptionStatus?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }

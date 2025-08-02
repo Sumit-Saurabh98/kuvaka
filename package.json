@@ -4,9 +4,10 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "nodemon --exec \"node --loader ts-node/esm\" src/app.ts",
-    "build": "tsc",
-    "start": "node dist/app.js"
+    "start": "node ./dist/app.js",
+    "server": "nodemon ./dist/app.js",
+    "dev": "concurrently \"npm run watch\" \"npm run server\"",
+    "watch": "tsc -w"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.1.0",
+    "concurrently": "^9.2.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.13.0",
     "ts-node": "^10.9.2",

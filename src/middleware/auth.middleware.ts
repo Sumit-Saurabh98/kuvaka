@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import { Response, Request, NextFunction } from "express";
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import { AppError } from '../utils/errorHandler';
-import { localPrismaClient } from '../utils/prisma';
+import jwt from 'jsonwebtoken';
+import { AppError } from '../utils/errorHandler.js';
+import { localPrismaClient } from '../utils/prisma.js';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -49,6 +49,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
         next();
         
     } catch (err: unknown) {
+        const { JsonWebTokenError, TokenExpiredError } = jwt;
         if (err instanceof JsonWebTokenError) {
           return next(new AppError('Invalid token. Please log in again!', 401));
         }
