@@ -1,0 +1,73 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  GEMINI
+}
+
+enum SubscriptionTier {
+  BASIC
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User{
+  id String @id @default(uuid())
+  mobileNumber String @unique
+  otp String
+  otpExpireAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatrooms ChatRoom[]
+  subscription Subscription[]
+
+  dailyPromptCount Int @default(0)
+  lastPromptReset DateTime @default(now())
+}
+
+model ChatRoom{
+  id String @id @default(uuid())
+  name String
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message{
+  id String @id @default(uuid())
+  chatRoomId String
+  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  role Role
+  content String
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier SubscriptionTier @default(BASIC)
+  stripeCustomerId String?
+  stripeSubscriptionId String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  status        SubscriptionStatus?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
