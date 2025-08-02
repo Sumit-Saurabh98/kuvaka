@@ -1,5 +1,5 @@
 import express, { Application, Request, Response } from 'express';
-import { prisma } from './utils/prisma.js';
+import { localPrismaClient } from './utils/prisma.js';
 
 const app: Application = express();
 const PORT = process.env.PORT || 7002;
@@ -16,6 +16,6 @@ app.listen(PORT, () => {
 });
 
 process.on('beforeExit', async () => {
-  await prisma.$disconnect();
+  await localPrismaClient.$disconnect();
   console.log('Prisma client disconnected.');
 });
