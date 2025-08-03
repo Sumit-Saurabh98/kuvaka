@@ -4,11 +4,14 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "start": "node ./dist/app.js",
+    "generate": "prisma generate",
+    "build": "npm run generate && tsc",
+    "start": "node dist/app.js",
     "server": "nodemon ./dist/app.js",
     "dev": "concurrently \"npm run watch\" \"npm run server\"",
     "watch": "tsc -w",
-    "worker": "nodemon ./dist/utils/worker.js"
+    "worker:dev": "nodemon ./dist/utils/worker.js",
+    "worker": "node ./dist/utils/worker.js"
   },
   "keywords": [],
   "author": "",
