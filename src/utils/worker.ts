@@ -16,7 +16,7 @@ async function processTask(payload: string) {
     userMessageId: string;
     userContent: string;
   };
-  const { chatroomId, userId, userMessageId, userContent } = JSON.parse(payload) as MessagePayload;
+  const { chatroomId, userId, userContent } = JSON.parse(payload) as MessagePayload;
 
   const chatHistory = await localPrismaClient.message.findMany({
     where: { chatRoomId: chatroomId },
@@ -31,7 +31,7 @@ async function processTask(payload: string) {
 
   const chat = model.startChat({ history: historyForGemini, generationConfig: { maxOutputTokens: 2000 } });
   const geminiResult = await chat.sendMessage(userContent);
-  const geminiText = await geminiResult.response.text();
+  const geminiText = geminiResult.response.text();
 
   await localPrismaClient.$transaction(async (tx) => {
     await tx.message.create({
