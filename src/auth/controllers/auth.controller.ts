@@ -33,7 +33,7 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json({
       status: 'success',
       message: 'OTP sent successfully.',
-      otp: process.env.NODE_ENV !== 'production' ? otp : undefined,
+      otp: otp
     });
   });
 
@@ -63,7 +63,7 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json({
       status: 'success',
       message: 'OTP for password reset sent successfully (mocked).',
-      otp: process.env.NODE_ENV !== 'production' ? otp : undefined,
+      otp: otp,
     });
   });
 
