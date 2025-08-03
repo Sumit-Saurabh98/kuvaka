@@ -4,15 +4,15 @@ import { protect } from '../../middleware/auth.middleware.js';
 
 const router = Router();
 
-router.post('/signup', signup);
-router.post('/send-otp', sendOtp);
-router.post('/verify-otp', verifyOtp);
-router.post('/forgot-password', forgotPassword);
+router.route('/signup').post(signup);
+router.route('/send-otp').post(sendOtp);
+router.route('/verify-otp').post(verifyOtp);
+router.route('/forgot-password').post(forgotPassword);
 
 // Protected routes
 router.use(protect); 
 
-router.post('/change-password', changePassword); 
-router.get('/me', getMe); 
+router.route('/change-password').post(changePassword);
+router.route('/me').get(getMe);
 
 export default router;

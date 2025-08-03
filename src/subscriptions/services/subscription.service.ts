@@ -1,21 +1,25 @@
-// src/subscriptions/services/subscription.service.ts
 import Stripe from "stripe";
 import { stripe } from "../../utils/stripe.js";
-import { localPrismaClient, SubscriptionStatus, SubscriptionTier } from "../../utils/prisma.js";
+import {
+  localPrismaClient,
+  SubscriptionStatus,
+  SubscriptionTier,
+} from "../../utils/prisma.js";
 import { AppError } from "../../utils/errorHandler.js";
 
 const STRIPE_PRO_PRICE_ID = process.env.STRIPE_PRO_PRICE_ID!;
 const CLIENT_URL = process.env.CLIENT_URL!;
 
-/**
- * SubscriptionService
- */
+// --- Subscription Service ---
 export class SubscriptionService {
   /**
    * Creates or reuses a Stripe customer and returns a Checkout Session URL
    * that upgrades the user from BASIC → PRO.
    */
-  async createProSubscriptionCheckoutSession(userId: string, userMobileNumber: string): Promise<string> {
+  async createProSubscriptionCheckoutSession(
+    userId: string,
+    userMobileNumber: string
+  ): Promise<string> {
     // 1. Fetch user and include existing subscriptions
     const user = await localPrismaClient.user.findUnique({
       where: { id: userId },
@@ -28,7 +32,7 @@ export class SubscriptionService {
     // 2. Reuse Stripe Customer ID if already exists
     let stripeCustomerId: string | undefined;
 
-    const existing = user.subscription.find((s) => s.stripeCustomerId);
+    const existing = user.subscription;
     if (existing?.stripeCustomerId) {
       stripeCustomerId = existing.stripeCustomerId;
     }
@@ -41,6 +45,7 @@ export class SubscriptionService {
       });
       stripeCustomerId = cust.id;
 
+      // track in the earliest subscription
       const firstSub = await localPrismaClient.subscription.findFirst({
         where: { userId: user.id },
         orderBy: { createdAt: "asc" },
@@ -87,62 +92,96 @@ export class SubscriptionService {
   async handleStripeWebhook(event: Stripe.Event): Promise<void> {
     try {
       if (event.type === "checkout.session.completed") {
-        await this.handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
+        await this.handleCheckoutSessionCompleted(
+          event.data.object as Stripe.Checkout.Session
+        );
       } else if (event.type === "customer.subscription.created") {
-        await this.handleSubscriptionCreated(event.data.object as Stripe.Subscription);
+        await this.handleSubscriptionCreated(
+          event.data.object as Stripe.Subscription
+        );
       } else if (event.type === "invoice.payment_succeeded") {
-        await this.handleInvoicePaymentSucceeded(event.data.object as Stripe.Invoice);
+        await this.handleInvoicePaymentSucceeded(
+          event.data.object as Stripe.Invoice
+        );
       } else if (event.type === "invoice.payment_failed") {
-        await this.handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
+        await this.handleInvoicePaymentFailed(
+          event.data.object as Stripe.Invoice
+        );
       } else if (event.type === "customer.subscription.deleted") {
-        await this.handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+        await this.handleSubscriptionDeleted(
+          event.data.object as Stripe.Subscription
+        );
       } else {
         console.log(`⚠️ Unhandled Stripe event: ${event.type}`);
       }
     } catch (err) {
-      console.error(`❌ Error in handleStripeWebhook for event ${event.type}:`, err);
+      console.error(
+        `❌ Error in handleStripeWebhook for event ${event.type}:`,
+        err
+      );
     }
   }
 
-  private async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
+  private async handleCheckoutSessionCompleted(
+    session: Stripe.Checkout.Session
+  ): Promise<void> {
     const stripeSubscriptionId = session.subscription as string | undefined;
     const userId: string | undefined =
-      session.metadata?.userId ?? (session.client_reference_id as string | undefined);
+      session.metadata?.userId ??
+      (session.client_reference_id as string | undefined);
     if (!stripeSubscriptionId || !userId) {
       console.error("Missing userId or subscriptionId in session:", session.id);
       return;
     }
     await this.upgradeBasicToPro(userId, stripeSubscriptionId);
-    console.log(`✅ [session.completed] Upgraded user=${userId} to PRO sub=${stripeSubscriptionId}`);
+    console.log(
+      `✅ [session.completed] Upgraded user=${userId} to PRO sub=${stripeSubscriptionId}`
+    );
   }
 
-  private async handleSubscriptionCreated(sub: Stripe.Subscription): Promise<void> {
+  private async handleSubscriptionCreated(
+    sub: Stripe.Subscription
+  ): Promise<void> {
     const userId = sub.metadata?.userId as string | undefined;
     if (!userId) {
       console.warn("Subscription created without userId metadata:", sub.id);
       return;
     }
     await this.upgradeBasicToPro(userId, sub.id, sub);
-    console.log(`✅ [subscription.created] Upgraded user=${userId} to PRO sub=${sub.id}`);
+    console.log(
+      `✅ [subscription.created] Upgraded user=${userId} to PRO sub=${sub.id}`
+    );
   }
 
-  private async handleInvoicePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
+  private async handleInvoicePaymentSucceeded(
+    invoice: Stripe.Invoice
+  ): Promise<void> {
     // ⚠️ In Basil API, `invoice.subscription` is removed.
     // Use `invoice.parent.subscription_details.subscription`
     const subId =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (invoice as any)?.parent?.subscription_details?.subscription as string | undefined;
+      (invoice as any)?.parent?.subscription_details?.subscription as
+        | string
+        | undefined;
 
     if (subId) {
       await this.upgradeProPeriodFor(subId);
-      console.log(`✅ [invoice.payment_succeeded] Updated billing period for sub=${subId}`);
+      console.log(
+        `✅ [invoice.payment_succeeded] Updated billing period for sub=${subId}`
+      );
     } else {
-      console.warn("invoice.payment_succeeded without parent.subscription_details", invoice.id);
+      console.warn(
+        "invoice.payment_succeeded without parent.subscription_details",
+        invoice.id
+      );
     }
   }
 
-  private async handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
-    const subId = (invoice as any)?.parent?.subscription_details?.subscription as string | undefined;
+  private async handleInvoicePaymentFailed(
+    invoice: Stripe.Invoice
+  ): Promise<void> {
+    const subId = (invoice as any)?.parent?.subscription_details
+      ?.subscription as string | undefined;
     if (subId) {
       await localPrismaClient.subscription.updateMany({
         where: { stripeSubscriptionId: subId },
@@ -152,7 +191,9 @@ export class SubscriptionService {
     }
   }
 
-  private async handleSubscriptionDeleted(sub: Stripe.Subscription): Promise<void> {
+  private async handleSubscriptionDeleted(
+    sub: Stripe.Subscription
+  ): Promise<void> {
     await localPrismaClient.subscription.updateMany({
       where: { stripeSubscriptionId: sub.id },
       data: { status: SubscriptionStatus.INACTIVE },
@@ -163,10 +204,16 @@ export class SubscriptionService {
   /**
    * Upgrade the user's BASIC plan to PRO — in-place (no new row).
    */
-  private async upgradeBasicToPro(userId: string, stripeSubscriptionId: string, stripeSub?: Stripe.Subscription): Promise<void> {
-    const sub = stripeSub || (await stripe.subscriptions.retrieve(stripeSubscriptionId, {
-      expand: ["items.data"],
-    }));
+  private async upgradeBasicToPro(
+    userId: string,
+    stripeSubscriptionId: string,
+    stripeSub?: Stripe.Subscription
+  ): Promise<void> {
+    const sub =
+      stripeSub ||
+      (await stripe.subscriptions.retrieve(stripeSubscriptionId, {
+        expand: ["items.data"],
+      }));
 
     const firstItem = sub.items?.data?.[0];
     if (!firstItem) {
@@ -184,7 +231,11 @@ export class SubscriptionService {
     }
 
     await localPrismaClient.subscription.updateMany({
-      where: { userId, tier: SubscriptionTier.BASIC, status: SubscriptionStatus.ACTIVE },
+      where: {
+        userId,
+        tier: SubscriptionTier.BASIC,
+        status: SubscriptionStatus.ACTIVE,
+      },
       data: {
         tier: SubscriptionTier.PRO,
         stripeSubscriptionId: stripeSubscriptionId,
@@ -198,8 +249,12 @@ export class SubscriptionService {
   /**
    * Refresh the billing window if invoice succeeds (subscription stays PRO).
    */
-  private async upgradeProPeriodFor(stripeSubscriptionId: string): Promise<void> {
-    const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId, { expand: ["items.data"] });
+  private async upgradeProPeriodFor(
+    stripeSubscriptionId: string
+  ): Promise<void> {
+    const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId, {
+      expand: ["items.data"],
+    });
     const firstItem = sub.items?.data?.[0];
     if (!firstItem) return;
 
@@ -229,22 +284,25 @@ export class SubscriptionService {
       throw new AppError("User not found.", 404);
     }
 
-    const activePro = user.subscription.find(
-      (s) =>
-        s.status === SubscriptionStatus.ACTIVE
-        && s.tier === SubscriptionTier.PRO
-        && s.currentPeriodEnd
-        && s.currentPeriodEnd > new Date()
-    );
-    if (activePro) {
+    const sub = user.subscription;
+    if (
+      sub &&
+      sub.status === SubscriptionStatus.ACTIVE &&
+      sub.tier === SubscriptionTier.PRO &&
+      sub.currentPeriodEnd &&
+      sub.currentPeriodEnd > new Date()
+    ) {
       return SubscriptionTier.PRO;
     }
 
-    const activeBasic = user.subscription.find(
-      (s) =>
-        s.status === SubscriptionStatus.ACTIVE
-        && s.tier === SubscriptionTier.BASIC
-    );
-    return activeBasic ? SubscriptionTier.BASIC : SubscriptionTier.BASIC;
+    if (
+      sub &&
+      sub.status === SubscriptionStatus.ACTIVE &&
+      sub.tier === SubscriptionTier.BASIC
+    ) {
+      return SubscriptionTier.BASIC;
+    }
+
+    return SubscriptionTier.BASIC;
   }
 }

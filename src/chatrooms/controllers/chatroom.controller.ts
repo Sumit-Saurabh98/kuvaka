@@ -2,14 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import { ChatroomService } from "../services/chatroom.service.js";
 import { catchAsync, AppError } from "../../utils/errorHandler.js";
 
+// --- Chatroom Controller ---
 const chatroomService = new ChatroomService();
 
+// --- createChatroom ---
 export const createChatroom = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body;
     const userId = req.user?.id;
-
-    console.log("name", name, userId)
 
     if (!userId) {
       return next(new AppError("User not authenticated.", 401));
@@ -20,6 +20,7 @@ export const createChatroom = catchAsync(
         .json({ status: "fail", message: "Chatroom name is required." });
     }
 
+    // Create chatroom
     const chatroom = await chatroomService.createChatroom(userId, name);
 
     res.status(201).json({
@@ -32,6 +33,7 @@ export const createChatroom = catchAsync(
   }
 );
 
+// --- listChatrooms ---
 export const listChatrooms = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
@@ -52,6 +54,8 @@ export const listChatrooms = catchAsync(
   }
 );
 
+
+// --- getChatroom ---
 export const getChatroom = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
@@ -72,6 +76,7 @@ export const getChatroom = catchAsync(
   }
 );
 
+// --- sendMessage ---
 export const sendMessage = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id: chatroomId } = req.params;

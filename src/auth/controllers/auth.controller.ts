@@ -3,10 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import { AuthService } from "../services/auth.service.js";
 import { AppError, catchAsync } from "../../utils/errorHandler.js";
 
+// --- Auth Controller ---
 const authService = new AuthService();
 
+// --- signup ---
 export const signup = catchAsync(async (req: Request, res: Response) => {
-    const { mobileNumber, password } = req.body;
+    const { mobileNumber, password } = req.body; // mobileNumber, password from body
   
     if (!mobileNumber) {
       return res.status(400).json({ status: 'fail', message: 'Mobile number is required for signup.' });
@@ -22,6 +24,8 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
     });
   });
 
+
+  // --- send otp ---
   export const sendOtp = catchAsync(async (req: Request, res: Response) => {
     const { mobileNumber } = req.body;
   
@@ -37,6 +41,7 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
     });
   });
 
+  // --- verify otp ---
   export const verifyOtp = catchAsync(async (req: Request, res: Response) => {
     const { mobileNumber, otp } = req.body;
   
@@ -52,6 +57,8 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
     });
   });
 
+
+  // --- forgot password ---
   export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
     const { mobileNumber } = req.body;
   
@@ -67,6 +74,9 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
     });
   });
 
+
+
+  // --- change password ---
   export const changePassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { newPassword } = req.body;
   
@@ -85,6 +95,8 @@ export const signup = catchAsync(async (req: Request, res: Response) => {
     });
   });
 
+
+  // --- get me ---
   export const getMe = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user || !req.user.id) { 
        return next(new AppError('User not authenticated.', 401));

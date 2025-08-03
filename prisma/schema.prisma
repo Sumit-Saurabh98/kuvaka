@@ -33,7 +33,7 @@ model User {
   password     String?
 
   chatrooms    ChatRoom[]
-  subscription Subscription[]
+  subscription Subscription?
 
   dailyPromptCount Int      @default(0)
   lastPromptReset  DateTime @default(now())
@@ -60,7 +60,7 @@ model Message {
 
 model Subscription {
   id                   String              @id @default(uuid())
-  userId               String
+  userId               String              @unique
   user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   tier                 SubscriptionTier    @default(BASIC)
   stripeCustomerId     String?

@@ -8,12 +8,13 @@ import subscriptionRoutes from './subscriptions/routes/subscription.routes.js';
 const app: Application = express();
 const PORT = process.env.PORT || 7002;
 
-// IMPORTANT: one raw-body middleware applied only for Stripe webhook path
+// --- Raw-body middleware applied only for Stripe webhook path ---
 app.use("/api/v1/webhook/stripe", express.raw({ type: "application/json" }));
 
 
 app.use(express.json());
 
+// --- Health check end-point ---
 app.get('/healthz', (req: Request, res: Response) => {
   res.status(200).json({ message: 'Server is healthy!' });
 });
@@ -31,11 +32,15 @@ app.use((req, _res, next) => next(new AppError(`Cannot find ${req.originalUrl}`,
 // --- global error handler ---
 app.use(globalErrorHandler);
 
+
+// --- app is listining on port  ---
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Access it at: http://localhost:${PORT}`);
 });
 
+
+// --- before exit please close the database connection
 process.on('beforeExit', async () => {
   await localPrismaClient.$disconnect();
   console.log('Prisma client disconnected.');
