@@ -12,7 +12,7 @@ const CLIENT_URL = process.env.CLIENT_URL!;
 
 // --- Subscription Service ---
 export class SubscriptionService {
-  /**
+  /** 
    * Creates or reuses a Stripe customer and returns a Checkout Session URL
    * that upgrades the user from BASIC → PRO.
    */
@@ -112,7 +112,7 @@ export class SubscriptionService {
           event.data.object as Stripe.Subscription
         );
       } else {
-        console.log(`⚠️ Unhandled Stripe event: ${event.type}`);
+        console.log(`Unhandled Stripe event: ${event.type}`);
       }
     } catch (err) {
       console.error(

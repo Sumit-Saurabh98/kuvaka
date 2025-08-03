@@ -1,0 +1,497 @@
+{
+	"info": {
+		"_postman_id": "4af34a08-8c81-4a81-9ba1-d9915e6435b2",
+		"name": "kuvaka",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26052636",
+		"_collection_link": "https://crimson-sunset-627255.postman.co/workspace/New-Team-Workspace~33e28544-04c6-4817-a988-88c3a57fcf2f/collection/26052636-4af34a08-8c81-4a81-9ba1-d9915e6435b2?action=share&source=collection_link&creator=26052636"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobileNumber\": \"7373737373\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/auth/signup",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send-otp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobileNumber\": \"7373737373\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/auth/send-otp",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"send-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify-otp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobileNumber\": \"7373737373\",\n    \"otp\": \"549093\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/auth/verify-otp",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"verify-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgot-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobileNumber\": \"7373737373\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/auth/forgot-password",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/auth/me",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change-password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"newPassword\": \"mypassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/auth/change-password",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "chatrooms",
+			"item": [
+				{
+					"name": "create-chatroom",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"chatroom 01 basic\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/chatroom",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chatroom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list-chatrooms",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/chatroom",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chatroom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "chatroom-details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/chatroom/53cd11bb-b842-48d0-ace8-21ee83127e7e",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chatroom",
+								"53cd11bb-b842-48d0-ace8-21ee83127e7e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send-message-to-chatroom",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"what is yoga?\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/chatroom/53cd11bb-b842-48d0-ace8-21ee83127e7e/message",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chatroom",
+								"53cd11bb-b842-48d0-ace8-21ee83127e7e",
+								"message"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subscription",
+			"item": [
+				{
+					"name": "subscribe-pro",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/subscribe/pro",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subscribe",
+								"pro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check-subscription-status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjYjE0ZmZmLThjNTEtNGI0Ni1iYTcyLTg5ZGJhM2YwNWFhNyIsIm1vYmlsZU51bWJlciI6IjczNzM3MzczNzMiLCJ0aWVyIjoiQkFTSUMiLCJpYXQiOjE3NTQyNTg3MjQsImV4cCI6MTc1NDM0NTEyNH0.L2tt9tvOSICQ4DicWRoTasdA0ykpMRy34EgGnRTV9ig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/api/v1/subscription/status",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subscription",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "health-check",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://web-production-5ca4.up.railway.app/healthz",
+							"protocol": "https",
+							"host": [
+								"web-production-5ca4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"healthz"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
