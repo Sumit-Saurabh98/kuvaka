@@ -1,4 +1,6 @@
+import 'dotenv/config';
 import express, { Application, NextFunction, Request, Response } from 'express';
+import cors from 'cors';
 import { localPrismaClient } from './utils/prisma.js';
 import { AppError, globalErrorHandler } from './utils/errorHandler.js';
 import authRoutes from './auth/routes/auth.routes.js';
@@ -12,7 +14,12 @@ const PORT = process.env.PORT || 7002;
 app.use("/api/v1/webhook/stripe", express.raw({ type: "application/json" }));
 
 
+app.use(cors({
+  origin: [process.env.CLIENT_URL] as string[],
+  credentials: true
+}));
 app.use(express.json());
+
 
 // --- Health check end-point ---
 app.get('/healthz', (req: Request, res: Response) => {
