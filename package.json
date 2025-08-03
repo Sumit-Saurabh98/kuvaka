@@ -7,7 +7,8 @@
     "start": "node ./dist/app.js",
     "server": "nodemon ./dist/app.js",
     "dev": "concurrently \"npm run watch\" \"npm run server\"",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "worker": "nodemon ./dist/utils/worker.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.3",
+    "@types/ioredis": "^4.28.10",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.1.0",
     "concurrently": "^9.2.0",
@@ -25,11 +27,13 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.13.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "ioredis": "^5.7.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.0"
   }
