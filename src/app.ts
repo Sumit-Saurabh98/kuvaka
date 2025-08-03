@@ -3,9 +3,14 @@ import { localPrismaClient } from './utils/prisma.js';
 import { AppError, globalErrorHandler } from './utils/errorHandler.js';
 import authRoutes from './auth/routes/auth.routes.js';
 import chatroomRoutes from './chatrooms/routes/chatroom.routes.js'
+import subscriptionRoutes from './subscriptions/routes/subscription.routes.js';
 
 const app: Application = express();
 const PORT = process.env.PORT || 7002;
+
+// IMPORTANT: one raw-body middleware applied only for Stripe webhook path
+app.use("/api/v1/webhook/stripe", express.raw({ type: "application/json" }));
+
 
 app.use(express.json());
 
@@ -17,14 +22,13 @@ app.get('/healthz', (req: Request, res: Response) => {
 // --- routes ---
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/chatroom', chatroomRoutes);
+app.use("/api/v1", subscriptionRoutes);
 
 
 // --- unhandled routes ---
-app.use((req: Request, res: Response, next: NextFunction) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
+app.use((req, _res, next) => next(new AppError(`Cannot find ${req.originalUrl}`, 404)));
 
-// --- Global Error Handler ---
+// --- global error handler ---
 app.use(globalErrorHandler);
 
 app.listen(PORT, () => {

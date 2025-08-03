@@ -110,7 +110,7 @@ export class ChatroomService {
       }
 
       const dailyLimit = parseInt(
-        process.env.BASIC_TIER_DAILY_PROMPT_LIMIT || "50",
+        process.env.BASIC_TIER_DAILY_PROMPT_LIMIT || "5",
         10
       );
       if (user.dailyPromptCount >= dailyLimit) {
