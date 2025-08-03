@@ -1,7 +1,8 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import { localPrismaClient } from './utils/prisma.js';
-import authRoutes from './auth/routes/auth.routes.js';
 import { AppError, globalErrorHandler } from './utils/errorHandler.js';
+import authRoutes from './auth/routes/auth.routes.js';
+import chatroomRoutes from './chatrooms/routes/chatroom.routes.js'
 
 const app: Application = express();
 const PORT = process.env.PORT || 7002;
@@ -15,6 +16,7 @@ app.get('/healthz', (req: Request, res: Response) => {
 
 // --- routes ---
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/chatroom', chatroomRoutes);
 
 
 // --- unhandled routes ---
