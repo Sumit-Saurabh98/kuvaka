@@ -1,0 +1,53 @@
+{
+  "name": "kuvaka",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "generate": "prisma generate",
+    "build": "npm run generate && tsc",
+    "start": "node dist/app.js",
+    "server": "nodemon ./dist/app.js",
+    "worker:dev": "nodemon ./dist/utils/worker.js",
+    "dev": "concurrently \"npm run watch\" \"npm run server\" \"npm run worker:dev\"",
+    "watch": "tsc -w",
+    "worker": "node ./dist/utils/worker.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/ioredis": "^4.28.10",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.1.0",
+    "@types/nodemailer": "^7.0.4",
+    "@types/stripe": "^8.0.416",
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.13.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/client": "^6.13.0",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "ioredis": "^5.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.17.0",
+    "morgan": "^1.10.1",
+    "nodemailer": "^7.0.12",
+    "stripe": "^18.4.0"
+  }
+}

@@ -1,0 +1,70 @@
+import 'dotenv/config';
+import express, { Application, NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import { localPrismaClient } from './utils/prisma.js';
+import { AppError, globalErrorHandler } from './utils/errorHandler.js';
+import authRoutes from './auth/routes/auth.js';
+import chatroomRoutes from './chatrooms/routes/chatroom.js'
+import subscriptionRoutes from './subscriptions/routes/subscription.js';
+import helmet from 'helmet';
+
+const app: Application = express();
+const PORT = process.env.PORT || 7002;
+
+// --- Raw-body middleware applied only for Stripe webhook path ---
+app.use("/api/v1/webhook/stripe", express.raw({ type: "application/json" }));
+
+
+app.use(cors({
+  origin: [process.env.CLIENT_URL] as string[],
+  credentials: true
+}));
+app.use(express.json());
+app.use(cookieParser());
+app.use(helmet());
+
+// --- Morgan logging middleware with custom format ---
+app.use(morgan((tokens, req, res) => {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms'
+  ].join(' ')
+}));
+
+
+// --- Health check end-point ---
+app.get('/healthz', (req: Request, res: Response) => {
+  res.status(200).json({ message: 'Server is healthy!' });
+});
+
+
+// --- routes ---
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/chatroom', chatroomRoutes);
+app.use("/api/v1", subscriptionRoutes);
+
+
+// --- unhandled routes ---
+app.use((req, _res, next) => next(new AppError(`Cannot find ${req.originalUrl}`, 404)));
+
+// --- global error handler ---
+app.use(globalErrorHandler);
+
+
+// --- app is listining on port  ---
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Access it at: http://localhost:${PORT}`);
+});
+
+
+// --- before exit please close the database connection
+process.on('beforeExit', async () => {
+  await localPrismaClient.$disconnect();
+  console.log('Prisma client disconnected.');
+});
