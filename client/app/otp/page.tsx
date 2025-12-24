@@ -124,7 +124,7 @@ export default function OtpPage() {
 
             <div className="mt-6 text-center space-y-4">
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                Didn't receive the code?
+                Didn&apos;t receive the code?
               </div>
               <Button
                 variant="outline"
